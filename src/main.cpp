@@ -33,7 +33,7 @@ int main()
   uWS::Hub h;
 
   PID pid;
-  pid.Init(0.05, 0.000001, 0.8);
+  pid.Init(0.09, 0.000001, 0.9);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -53,12 +53,12 @@ int main()
           pid.UpdateError(cte);
           double steer_value = pid.TotalError();
           double throttle_value =
-            fabs(steer_value) < 0.2 ?
+            fabs(steer_value) < 0.001 ?
+                                0.7 :
+            fabs(steer_value) < 0.01 ?
                                 0.5 :
-            fabs(steer_value) < 0.5 ?
-                                0.4 :
-            fabs(steer_value) < 0.8 ?
-                                0.3 : 0.2;
+            fabs(steer_value) < 0.1 ?
+                                0.3 : 0.20;
           std::cout << "Errors:" << std::endl
                     << "p: " << pid.p_error
                     << " i: " << pid.i_error
